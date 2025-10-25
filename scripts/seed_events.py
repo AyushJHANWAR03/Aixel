@@ -2,9 +2,12 @@ import requests
 import random
 import uuid
 import time
+import os
 from datetime import datetime, timedelta
 
-API_BASE = 'http://localhost:8000/api/track'
+# Use production backend URL if deployed, otherwise localhost
+BACKEND_URL = os.getenv('BACKEND_URL', 'https://aixel-pw3d.onrender.com')
+API_BASE = f'{BACKEND_URL}/api/track'
 
 # Realistic test users
 USERS = [
