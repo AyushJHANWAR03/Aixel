@@ -12,6 +12,51 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from seed_events import generate_session
 
+def create_schema():
+    """Create database schema if it doesn't exist"""
+    database_url = os.getenv('DATABASE_URL')
+    if not database_url:
+        print("❌ DATABASE_URL not set")
+        return False
+
+    try:
+        engine = create_engine(database_url)
+        with engine.connect() as conn:
+            print("📦 Creating database schema if not exists...")
+
+            # Enable UUID extension
+            conn.execute(text('CREATE EXTENSION IF NOT EXISTS "pgcrypto"'))
+
+            # Create events table
+            conn.execute(text("""
+                CREATE TABLE IF NOT EXISTS events (
+                    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+                    event_type text NOT NULL,
+                    timestamp timestamptz NOT NULL DEFAULT now(),
+                    session_id text,
+                    user_id text,
+                    page_url text,
+                    utm_source text,
+                    utm_medium text,
+                    utm_campaign text,
+                    platform text,
+                    device text,
+                    revenue numeric,
+                    metadata jsonb
+                )
+            """))
+
+            # Create indexes
+            conn.execute(text("CREATE INDEX IF NOT EXISTS idx_events_timestamp ON events (timestamp)"))
+            conn.execute(text("CREATE INDEX IF NOT EXISTS idx_events_session ON events (session_id)"))
+
+            conn.commit()
+            print("✅ Schema created successfully")
+            return True
+    except Exception as e:
+        print(f"❌ Error creating schema: {e}")
+        return False
+
 def check_database_empty():
     """Check if database has any events"""
     database_url = os.getenv('DATABASE_URL')
@@ -32,8 +77,13 @@ def check_database_empty():
 def seed_production_data():
     """Seed production database with realistic data"""
     print("\n" + "="*60)
-    print("🌱 PRODUCTION DATABASE SEEDING")
+    print("🌱 PRODUCTION DATABASE INITIALIZATION")
     print("="*60)
+
+    # Create schema first
+    if not create_schema():
+        print("❌ Failed to create schema. Aborting.")
+        return
 
     # Check if already seeded
     if not check_database_empty():
