@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Aixel Demo Store</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .page-title {
+            font-size: 2.5em;
+            color: #1f2937;
+            margin-bottom: 30px;
+        }
+        .cart-empty {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .cart-empty h2 {
+            font-size: 1.5em;
+            color: #6b7280;
+            margin: 20px 0;
+        }
+        .cart-item {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        .item-image {
+            width: 100px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .item-details {
+            flex: 1;
+        }
+        .item-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+        .item-price {
+            font-size: 1.3em;
+            color: #2563eb;
+            font-weight: bold;
+        }
+        .item-remove {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .item-remove:hover {
+            background: #dc2626;
+        }
+        .cart-summary {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .summary-total {
+            border-top: 2px solid #e5e7eb;
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        .btn-checkout {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .btn-checkout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        .btn-continue {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        .btn-continue:hover {
+            background: #eff6ff;
+        }
+        .tracking-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            z-index: 1000;
+        }
+        .tracking-indicator.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div id="tracking-indicator" class="tracking-indicator">📊 Event Tracked!</div>
+
+    <div class="header">
+        <div class="header-content">
+            <div class="logo" onclick="window.location.href='index.html'">🚀 Aixel Store</div>
+            <div style="color: white;">🛒 Shopping Cart</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title">Your Shopping Cart</h1>
+
+        <div id="cart-items"></div>
+
+        <div id="cart-summary" style="display: none;">
+            <div class="cart-summary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">$0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax (10%):</span>
+                    <span id="tax">$0</span>
+                </div>
+                <div class="summary-row summary-total">
+                    <span>Total:</span>
+                    <span id="total">$0</span>
+                </div>
+
+                <button class="btn-checkout" onclick="proceedToCheckout()">
+                    💳 Proceed to Checkout
+                </button>
+                <button class="btn-continue" onclick="window.location.href='index.html'">
+                    ← Continue Shopping
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="tracking.js"></script>
+    <script>
+        // Track cart page view
+        trackEvent('page_view', { metadata: { page: 'cart' } });
+        showTrackingIndicator('Cart Page View Tracked!');
+
+        // Load cart
+        let cart = JSON.parse(localStorage.getItem('aixel_cart')) || [];
+        const user = JSON.parse(localStorage.getItem('aixel_user'));
+
+        // Render cart
+        function renderCart() {
+            const cartItemsContainer = document.getElementById('cart-items');
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="cart-empty">
+                        <div style="font-size: 4em;">🛒</div>
+                        <h2>Your cart is empty</h2>
+                        <p style="color: #6b7280; margin: 20px 0;">Add some awesome AI tools to get started!</p>
+                        <button class="btn-checkout" onclick="window.location.href='index.html'" style="max-width: 300px; margin: 20px auto;">
+                            Browse Products
+                        </button>
+                    </div>
+                `;
+                document.getElementById('cart-summary').style.display = 'none';
+                return;
+            }
+
+            // Render cart items
+            cartItemsContainer.innerHTML = '';
+            cart.forEach((item, index) => {
+                const cartItemDiv = document.createElement('div');
+                cartItemDiv.className = 'cart-item';
+                cartItemDiv.innerHTML = `
+                    <img src="${item.image || 'https://via.placeholder.com/100x80'}" alt="${item.name}" class="item-image">
+                    <div class="item-details">
+                        <div class="item-name">${item.emoji} ${item.name}</div>
+                        <div class="item-price">$${item.price}</div>
+                    </div>
+                    <button class="item-remove" onclick="removeItem(${index})">Remove</button>
+                `;
+                cartItemsContainer.appendChild(cartItemDiv);
+            });
+
+            // Calculate totals
+            const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+            const tax = subtotal * 0.1;
+            const total = subtotal + tax;
+
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('cart-summary').style.display = 'block';
+        }
+
+        function removeItem(index) {
+            const item = cart[index];
+
+            // Track cart removal
+            trackEvent('cart_remove', {
+                user_id: user?.userId,
+                metadata: {
+                    product_id: item.id,
+                    product_name: item.name
+                }
+            });
+            showTrackingIndicator(`Removed: ${item.name}`);
+
+            cart.splice(index, 1);
+            localStorage.setItem('aixel_cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function proceedToCheckout() {
+            // Track checkout start
+            const total = cart.reduce((sum, item) => sum + item.price, 0) * 1.1;
+
+            trackEvent('checkout_start', {
+                user_id: user?.userId,
+                metadata: {
+                    items_count: cart.length,
+                    total_amount: total
+                }
+            });
+            showTrackingIndicator('Checkout Started! Redirecting...');
+
+            // Redirect to checkout
+            setTimeout(() => {
+                window.location.href = 'checkout.html';
+            }, 800);
+        }
+
+        renderCart();
+    </script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Aixel Demo Store</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .page-title {
+            font-size: 2.5em;
+            color: #1f2937;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .checkout-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 1.5em;
+            color: #1f2937;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1f2937;
+            border-top: 2px solid #e5e7eb;
+            margin-top: 10px;
+        }
+        .btn-pay {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        .btn-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        .demo-info {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 0.95em;
+        }
+        .tracking-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            z-index: 1000;
+        }
+        .tracking-indicator.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .success-animation {
+            text-align: center;
+            padding: 40px;
+        }
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: inline-block;
+            stroke-width: 4;
+            stroke: #10b981;
+            stroke-miterlimit: 10;
+            box-shadow: inset 0px 0px 0px #10b981;
+            animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+        }
+        @keyframes fill {
+            100% { box-shadow: inset 0px 0px 0px 40px #10b981; }
+        }
+        @keyframes scale {
+            0%, 100% { transform: none; }
+            50% { transform: scale3d(1.1, 1.1, 1); }
+        }
+    </style>
+</head>
+<body>
+    <div id="tracking-indicator" class="tracking-indicator">📊 Event Tracked!</div>
+
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">🚀 Aixel Store</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title">Checkout</h1>
+
+        <div class="demo-info">
+            <strong>📝 Demo Mode:</strong> This is a simulated checkout. No real payment will be processed!
+        </div>
+
+        <div class="checkout-section">
+            <h2 class="section-title">📦 Order Summary</h2>
+            <div id="order-items"></div>
+            <div class="order-total">
+                <span>Total:</span>
+                <span id="total">$0</span>
+            </div>
+        </div>
+
+        <form id="payment-form" onsubmit="handlePayment(event)">
+            <div class="checkout-section">
+                <h2 class="section-title">💳 Payment Information</h2>
+
+                <div class="form-group">
+                    <label>Card Number</label>
+                    <input type="text" placeholder="4242 4242 4242 4242" maxlength="19" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Expiry Date</label>
+                        <input type="text" placeholder="MM/YY" maxlength="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label>CVV</label>
+                        <input type="text" placeholder="123" maxlength="3" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Cardholder Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+            </div>
+
+            <div class="checkout-section">
+                <h2 class="section-title">📍 Billing Address</h2>
+
+                <div class="form-group">
+                    <label>Country</label>
+                    <select required>
+                        <option value="">Select country</option>
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>ZIP / Postal Code</label>
+                    <input type="text" placeholder="12345" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-pay">
+                💰 Complete Purchase
+            </button>
+        </form>
+    </div>
+
+    <script src="tracking.js"></script>
+    <script>
+        // Track checkout page view
+        trackEvent('page_view', { metadata: { page: 'checkout' } });
+        showTrackingIndicator('Checkout Page View Tracked!');
+
+        // Load cart
+        const cart = JSON.parse(localStorage.getItem('aixel_cart')) || [];
+        const user = JSON.parse(localStorage.getItem('aixel_user'));
+
+        // Redirect if cart is empty
+        if (cart.length === 0) {
+            alert('Your cart is empty!');
+            window.location.href = 'index.html';
+        }
+
+        // Render order summary
+        const orderItemsContainer = document.getElementById('order-items');
+        let subtotal = 0;
+
+        cart.forEach(item => {
+            subtotal += item.price;
+            const orderItemDiv = document.createElement('div');
+            orderItemDiv.className = 'order-item';
+            orderItemDiv.innerHTML = `
+                <span>${item.emoji} ${item.name}</span>
+                <span>$${item.price}</span>
+            `;
+            orderItemsContainer.appendChild(orderItemDiv);
+        });
+
+        const tax = subtotal * 0.1;
+        const total = subtotal + tax;
+        document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+
+        function handlePayment(e) {
+            e.preventDefault();
+
+            // Track payment attempt
+            trackEvent('payment_info_entered', {
+                user_id: user?.userId,
+                metadata: {
+                    total_amount: total,
+                    items_count: cart.length
+                }
+            });
+            showTrackingIndicator('Processing Payment...');
+
+            // Simulate payment processing
+            setTimeout(() => {
+                // Track successful purchase
+                trackEvent('purchase', {
+                    user_id: user?.userId,
+                    revenue: total,
+                    metadata: {
+                        items: cart.map(item => ({
+                            id: item.id,
+                            name: item.name,
+                            price: item.price
+                        })),
+                        tax: tax,
+                        subtotal: subtotal
+                    }
+                });
+                showTrackingIndicator('Purchase Complete! 🎉');
+
+                // Clear cart
+                localStorage.removeItem('aixel_cart');
+
+                // Show success message and redirect
+                setTimeout(() => {
+                    alert('🎉 Purchase Successful!\n\nThank you for your order! Your AI tools are ready to use.');
+                    window.location.href = 'index.html';
+                }, 1000);
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

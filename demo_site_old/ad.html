@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Offer - Aixel AI Tools</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .ad-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ad-banner {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .ad-banner h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .ad-banner .offer {
+            background: #fbbf24;
+            color: #1f2937;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+        .ad-content {
+            padding: 40px;
+        }
+        .features {
+            list-style: none;
+            margin: 30px 0;
+        }
+        .features li {
+            padding: 15px 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 1.1em;
+        }
+        .features li:before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+        .cta-button {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+        }
+        .tracking-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            z-index: 1000;
+        }
+        .tracking-indicator.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div id="tracking-indicator" class="tracking-indicator">📊 Event Tracked!</div>
+
+    <div class="ad-container">
+        <div class="ad-banner">
+            <h1>🚀 Transform Your Business with AI</h1>
+            <div class="offer">⚡ LIMITED TIME: 40% OFF</div>
+            <p style="font-size: 1.1em; margin-top: 15px;">Unlock powerful analytics and insights today!</p>
+        </div>
+
+        <div class="ad-content">
+            <h2 style="margin-bottom: 20px; color: #1f2937;">Why Choose Aixel?</h2>
+            <ul class="features">
+                <li>Advanced AI-powered analytics</li>
+                <li>Real-time customer journey tracking</li>
+                <li>Automated insights & recommendations</li>
+                <li>Easy integration with your tools</li>
+                <li>24/7 support & training included</li>
+            </ul>
+
+            <button class="cta-button" onclick="handleAdClick()">
+                🎁 Claim Your Discount Now
+            </button>
+
+            <p style="text-align: center; margin-top: 20px; color: #6b7280; font-size: 0.9em;">
+                ⏰ Offer expires in 24 hours
+            </p>
+        </div>
+    </div>
+
+    <script src="tracking.js"></script>
+    <script>
+        // Track page view on ad page
+        trackEvent('page_view', { metadata: { page: 'ad', landing: false } });
+        showTrackingIndicator('Ad Page Viewed');
+
+        function handleAdClick() {
+            // Track ad click
+            trackEvent('ad_click', {
+                metadata: {
+                    campaign: 'summer_sale',
+                    ad_type: 'limited_offer'
+                }
+            });
+            showTrackingIndicator('Ad Click Tracked! Redirecting...');
+
+            // Redirect to landing page with UTM parameters
+            setTimeout(() => {
+                window.location.href = 'index.html?utm_source=google&utm_medium=cpc&utm_campaign=summer_sale';
+            }, 800);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aixel Demo Store - AI-Powered Analytics Tools</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .cart-widget {
+            background: white;
+            color: #2563eb;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cart-widget:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,255,255,0.3);
+        }
+        .cart-count {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+        }
+        .landing-banner {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1f2937;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .section-title {
+            font-size: 2em;
+            color: #1f2937;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+        .product-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+        }
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        .product-emoji {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 2.5em;
+            background: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .product-info {
+            padding: 20px;
+        }
+        .product-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        .product-description {
+            color: #6b7280;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+        .product-price {
+            font-size: 1.5em;
+            color: #2563eb;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .btn-add-cart {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-add-cart:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
+        }
+        .tracking-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            z-index: 1000;
+        }
+        .tracking-indicator.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div id="tracking-indicator" class="tracking-indicator">📊 Event Tracked!</div>
+
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">🚀 Aixel Store</div>
+            <div class="user-info">
+                <span id="user-name">Welcome!</span>
+                <div class="cart-widget" onclick="goToCart()">
+                    🛒 Cart <span class="cart-count" id="cart-count">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="landing-banner" class="landing-banner" style="display: none;">
+        🎉 Special Offer Active! Get 40% OFF on all products - Limited Time!
+    </div>
+
+    <div class="container">
+        <h1 class="section-title">AI-Powered Analytics Tools</h1>
+
+        <div class="product-grid" id="products"></div>
+    </div>
+
+    <script src="tracking.js"></script>
+    <script>
+        // Check if user is logged in
+        const user = JSON.parse(localStorage.getItem('aixel_user'));
+        if (user) {
+            document.getElementById('user-name').textContent = `Hi, ${user.name}!`;
+        }
+
+        // Products with better descriptions and images
+        const products = [
+            {
+                id: 1,
+                name: 'AI Analytics Pro',
+                price: 299,
+                description: 'Advanced AI-powered analytics dashboard with real-time insights and predictive modeling.',
+                image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
+                emoji: '📊'
+            },
+            {
+                id: 2,
+                name: 'Marketing Dashboard',
+                price: 199,
+                description: 'Complete marketing analytics suite with campaign tracking and ROI optimization.',
+                image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
+                emoji: '📈'
+            },
+            {
+                id: 3,
+                name: 'Customer Insights',
+                price: 399,
+                description: 'Deep customer behavior analysis with AI-driven recommendations and segmentation.',
+                image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=300&fit=crop',
+                emoji: '👥'
+            },
+            {
+                id: 4,
+                name: 'Journey Tracker',
+                price: 249,
+                description: 'Track complete customer journeys across all touchpoints with visual funnel analysis.',
+                image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
+                emoji: '🎯'
+            }
+        ];
+
+        // Check for UTM parameters and show landing banner
+        const urlParams = new URLSearchParams(window.location.search);
+        const isFromAd = urlParams.get('utm_source') !== null;
+
+        if (isFromAd) {
+            document.getElementById('landing-banner').style.display = 'block';
+            trackEvent('page_view', { metadata: { landing: true, page: 'products' } });
+            showTrackingIndicator('Landing Page View Tracked!');
+        } else {
+            trackEvent('page_view', { metadata: { landing: false, page: 'products' } });
+            showTrackingIndicator('Page View Tracked!');
+        }
+
+        // Load cart from localStorage
+        let cart = JSON.parse(localStorage.getItem('aixel_cart')) || [];
+        updateCartCount();
+
+        // Render products
+        const productsContainer = document.getElementById('products');
+
+        products.forEach(product => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+            productCard.innerHTML = `
+                <div class="product-image-wrapper">
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-emoji">${product.emoji}</div>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-description">${product.description}</div>
+                    <div class="product-price">$${product.price}</div>
+                    <button class="btn-add-cart" onclick="addToCart(${product.id})">
+                        Add to Cart
+                    </button>
+                </div>
+            `;
+
+            // Track product view when clicking on the card (but not the button)
+            productCard.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('btn-add-cart')) {
+                    trackEvent('product_view', {
+                        user_id: user?.userId,
+                        metadata: {
+                            product_id: product.id,
+                            product_name: product.name,
+                            price: product.price
+                        }
+                    });
+                    showTrackingIndicator(`Product View Tracked: ${product.name}`);
+                }
+            });
+
+            productsContainer.appendChild(productCard);
+        });
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+
+            // Track add to cart event
+            trackEvent('add_to_cart', {
+                user_id: user?.userId,
+                metadata: {
+                    product_id: product.id,
+                    product_name: product.name,
+                    price: product.price
+                }
+            });
+            showTrackingIndicator(`Added to Cart: ${product.name}`);
+
+            // Add to cart
+            cart.push(product);
+            localStorage.setItem('aixel_cart', JSON.stringify(cart));
+            updateCartCount();
+
+            // Show success message
+            setTimeout(() => {
+                if (confirm('🎉 Product added to cart!\n\nGo to cart now?')) {
+                    goToCart();
+                }
+            }, 500);
+        }
+
+        function updateCartCount() {
+            document.getElementById('cart-count').textContent = cart.length;
+        }
+
+        function goToCart() {
+            if (cart.length === 0) {
+                alert('Your cart is empty. Add some products first!');
+                return;
+            }
+            window.location.href = 'cart.html';
+        }
+    </script>
+</body>
+</html>

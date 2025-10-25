@@ -1,0 +1,21 @@
+.tracking-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #10b981;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 0.9em;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.tracking-notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
