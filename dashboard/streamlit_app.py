@@ -10,7 +10,7 @@ import time
 
 load_dotenv()
 
-API_BASE = os.getenv("API_BASE", "http://localhost:8000")
+API_BASE = os.getenv("API_BASE", "https://aixel-pw3d.onrender.com")
 
 st.set_page_config(
     page_title="AI Journey Tracker - Admin",
@@ -261,9 +261,9 @@ if st.sidebar.button("⚡ Refresh Dashboard", type="primary", use_container_widt
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 🔗 Quick Access")
-st.sidebar.markdown("- 📚 [API Documentation](http://localhost:8000/docs)")
-st.sidebar.markdown("- 🛍️ [Customer Portal](http://localhost:8080)")
-st.sidebar.markdown("- 🗄️ [Database Admin](http://localhost:5050)")
+st.sidebar.markdown(f"- 📚 [API Documentation]({API_BASE}/docs)")
+st.sidebar.markdown("- 🛍️ [Customer Portal](https://aixel-frontend.onrender.com)")
+st.sidebar.markdown("- 🗄️ [Database Admin](https://aixel-dashboard.onrender.com)")
 
 # Main dashboard header
 st.markdown('<div class="main-header">🎯 AI CUSTOMER JOURNEY TRACKER</div>', unsafe_allow_html=True)
@@ -297,7 +297,7 @@ with st.spinner("🔮 Loading dashboard data..."):
     funnel_data, user_data, campaign_data, revenue_data, timeline_data, recent_events = fetch_all_data(hours)
 
 if not funnel_data:
-    st.error("❌ Failed to load data. Make sure FastAPI is running at http://localhost:8000")
+    st.error(f"❌ Failed to load data. Make sure FastAPI is running at {API_BASE}")
     st.stop()
 
 # ======================
