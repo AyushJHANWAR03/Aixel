@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://aixel-backend.onrender.com';
 
 // Deduplication cache - prevent same event from being tracked twice within 2 seconds
 const eventCache = new Map();
