@@ -19,7 +19,12 @@ app = FastAPI(title="AI Customer Journey Tracker")
 # CORS for demo site and dashboard
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://aixel-frontend.onrender.com",
+        "https://aixel-dashboard.onrender.com",
+        "http://localhost:8080",  # Keep for local dev
+        "http://localhost:8501"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
