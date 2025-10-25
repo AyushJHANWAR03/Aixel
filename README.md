@@ -2,127 +2,286 @@
 
 Real-time customer journey analytics with AI-powered insights for marketing optimization.
 
-## Features
+> **Built for Aixel AI** - This project was created as a demonstration of full-stack capabilities and contribution to the Aixel AI team as a Backend SDE 1 candidate. It showcases end-to-end implementation of event tracking, analytics pipelines, and AI-powered insights generation.
 
-- 📊 Real-time event tracking through marketing funnel
-- 🎯 Multi-stage conversion analysis (Ad Click → Purchase)
-- 🤖 AI-generated insights and recommendations
-- 📈 Interactive Streamlit dashboard
-- 🔄 Demo site for testing event flows
-- 🚀 FastAPI backend with Postgres
+## 🌐 Live Production Demo
 
-## Quick Start
+- **Customer Portal**: https://aixel-frontend.onrender.com
+- **Admin Dashboard**: https://aixel-dashboard.onrender.com
+- **Backend API**: https://aixel-pw3d.onrender.com
+- **API Documentation**: https://aixel-pw3d.onrender.com/docs
 
-### 1. Prerequisites
+## ✨ Features
+
+- 📊 **Real-time Event Tracking**: Complete user journey tracking from ad click to purchase
+- 🎯 **Multi-stage Funnel Analysis**: Ad Click → Landing → Product View → Cart → Purchase
+- 🤖 **AI-Powered Insights**: OpenAI GPT-4 integration for intelligent recommendations
+- 📈 **Stunning Dashboard**: Interactive Streamlit dashboard with real-time charts and metrics
+- 🛍️ **React Customer Portal**: Modern e-commerce interface with user authentication
+- 🚀 **Production-Ready Backend**: FastAPI with PostgreSQL, automatic schema creation & data seeding
+- 🔄 **Auto-Seeding**: Database automatically populated with 300 realistic sessions on first startup
+- 📱 **Responsive Design**: Works seamlessly on desktop and mobile devices
+- 🎨 **UTM Campaign Tracking**: Full attribution across Google, Facebook, LinkedIn, and more
+
+## 🚀 Quick Start
+
+### Option 1: Use Production Demo (Easiest)
+
+Just visit the live links above! The production deployment is fully functional with seeded data.
+
+### Option 2: Run Locally
+
+#### Prerequisites
 
 - Python 3.11+
+- Node.js 18+
 - Docker & Docker Compose
 - OpenAI API key (optional - falls back to mock insights)
 
-### 2. Setup
+#### Setup Backend & Database
 
 ```bash
-# Navigate to project directory
+# Clone repository
+git clone https://github.com/AyushJHANWAR03/Aixel.git
 cd Aixel
 
-# Create .env file
-cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY (optional)
-
-# Start Postgres
+# Start PostgreSQL
 docker compose up -d
 
-# Install dependencies
+# Install Python dependencies
 pip install -r requirements.txt
 
-# Apply database schema
-psql postgresql://postgres:postgres@localhost:5432/aijourney < sql/schema.sql
-```
-
-### 3. Run Services
-
-```bash
-# Terminal 1: Start FastAPI backend
+# Backend automatically creates schema and seeds data on first run!
 uvicorn backend.main:app --reload
-
-# Terminal 2: Start Streamlit dashboard
-streamlit run dashboard/streamlit_app.py
-
-# Terminal 3: Serve demo site (optional)
-cd demo_site && python -m http.server 8080
 ```
 
-### 4. Generate Test Data
+Backend will be available at `http://localhost:8000`
+
+#### Setup Dashboard
 
 ```bash
-# Seed 1000 synthetic sessions
+# In a new terminal
+streamlit run dashboard/streamlit_app.py
+```
+
+Dashboard will open at `http://localhost:8501`
+
+#### Setup React Frontend
+
+```bash
+# In a new terminal
+cd demo_site
+
+# Install dependencies
+npm install
+
+# Create environment file
+echo "VITE_API_BASE=http://localhost:8000" > .env
+
+# Start development server
+npm run dev
+```
+
+Frontend will be available at `http://localhost:5173`
+
+#### Manual Data Seeding (Optional)
+
+The backend auto-seeds on startup, but you can generate more data:
+
+```bash
 python scripts/seed_events.py
+# Enter number of sessions when prompted (default: 500)
 ```
 
-### 5. View Dashboard
-
-Open http://localhost:8501 and click "Generate Fresh Insights"
-
-## Architecture
+## 🏗️ Architecture
 
 ```
-Demo Site (HTML/JS) ──────┐
-                           ├──> FastAPI Backend ──> Postgres
-Streamlit Dashboard ──────┘          │
-                                     └──> OpenAI API
+┌─────────────────────┐
+│  React Frontend     │ ← Users browse products, add to cart, purchase
+│  (Vite + React)     │
+└──────────┬──────────┘
+           │ POST /api/track (events)
+           ▼
+┌─────────────────────┐
+│   FastAPI Backend   │ ← Event ingestion, analytics queries
+│   (Python 3.11)     │
+└──────────┬──────────┘
+           │
+           ├──> PostgreSQL (Event storage)
+           └──> OpenAI API (Insights generation)
+           ▲
+           │ GET /api/funnel, /api/user_analytics, etc.
+┌──────────┴──────────┐
+│ Streamlit Dashboard │ ← Admin views metrics & AI insights
+│  (Python + Plotly)  │
+└─────────────────────┘
 ```
 
-## API Endpoints
+## 📡 API Endpoints
 
-- `POST /api/track` - Ingest events
-- `GET /api/funnel?hours=168` - Get funnel metrics
-- `POST /api/generate_insights` - Generate AI insights
-- `GET /health` - Health check
+### Event Tracking
+- `POST /api/track` - Ingest user events (clicks, views, purchases, etc.)
 
-## Environment Variables
+### Analytics
+- `GET /api/funnel?hours=168` - Get funnel metrics (ad clicks → purchases)
+- `GET /api/user_analytics?hours=168` - User statistics and session data
+- `GET /api/campaign_performance?hours=168` - Campaign ROI and conversion rates
+- `GET /api/revenue_metrics?hours=168` - Revenue totals and order values
+- `GET /api/event_timeline?hours=168` - Time-series event data
+- `GET /api/recent_events?limit=20` - Live event feed
 
+### AI Insights
+- `POST /api/generate_insights` - Generate AI-powered recommendations
+
+### Health
+- `GET /health` - Service health check
+
+## ⚙️ Environment Variables
+
+### Backend (`/.env`)
+```bash
+DATABASE_URL=postgresql://user:password@host:5432/dbname
+OPENAI_API_KEY=sk-...  # Optional - uses fallback mock if not set
 ```
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/aijourney
-OPENAI_API_KEY=sk-...
-API_BASE=http://localhost:8000
+
+### Dashboard (`/.env`)
+```bash
+API_BASE=https://aixel-pw3d.onrender.com  # Backend API URL
+DATABASE_URL=postgresql://user:password@host:5432/dbname
 ```
 
-## Testing
+### Frontend (`/demo_site/.env`)
+```bash
+VITE_API_BASE=https://aixel-pw3d.onrender.com  # Backend API URL
+```
+
+## 🚢 Production Deployment
+
+This project is deployed on **Render.com** with three services:
+
+### Backend (Web Service)
+- **Type**: Docker
+- **Dockerfile**: `Dockerfile.backend`
+- **Auto-Deploy**: Enabled on git push
+- **Features**: Auto schema creation, auto-seeding on first run
+
+### Dashboard (Web Service)
+- **Type**: Docker
+- **Dockerfile**: `Dockerfile.dashboard`
+- **Auto-Deploy**: Enabled on git push
+
+### Frontend (Static Site)
+- **Type**: Static Site
+- **Build**: `npm install && npm run build`
+- **Publish**: `demo_site/dist`
+- **Root Directory**: `demo_site`
+
+All services connect to a single managed PostgreSQL instance.
+
+## 🧪 Testing
 
 ```bash
 # Run API tests
 pytest tests/ -v
 
-# Manual testing
-curl http://localhost:8000/health
+# Test backend health
+curl https://aixel-pw3d.onrender.com/health
+
+# Test funnel endpoint
+curl https://aixel-pw3d.onrender.com/api/funnel?hours=168
 ```
 
-## Project Structure
+## 📂 Project Structure
 
 ```
 /backend/          - FastAPI application
-/dashboard/        - Streamlit dashboard
-/demo_site/        - Static HTML demo site
-/scripts/          - Seed data scripts
-/sql/              - Database schema
-/tests/            - API tests
+  ├── main.py      - API endpoints & CORS config
+  ├── crud.py      - Database queries (funnel, analytics, etc.)
+  ├── models.py    - Pydantic models
+  ├── db.py        - Database connection
+  └── openai_client.py - AI insights generation
+
+/dashboard/        - Streamlit admin dashboard
+  └── streamlit_app.py - Dashboard UI with Plotly charts
+
+/demo_site/        - React customer-facing frontend
+  ├── src/
+  │   ├── pages/   - Product catalog, cart, checkout
+  │   ├── components/ - Auth, navigation
+  │   └── utils/   - Event tracking SDK
+  └── package.json
+
+/scripts/          - Database & seeding scripts
+  ├── init_db.py   - Auto schema creation & seeding
+  └── seed_events.py - Generate realistic sessions
+
+/sql/              - SQL schema (for reference)
+/tests/            - API integration tests
 ```
 
-## Demo Workflow
+## 🎯 User Journey Flow
 
-1. Start all services (Postgres, FastAPI, Streamlit)
-2. Run seed script to generate 1000+ sessions
-3. Open dashboard to view funnel metrics
-4. Click "Generate AI Insights" for recommendations
-5. Interact with demo site to create live events
+1. **User lands on frontend** → Tracks `page_view` event
+2. **User views product** → Tracks `product_view` event
+3. **User adds to cart** → Tracks `add_to_cart` event
+4. **User purchases** → Tracks `purchase` event with revenue
+5. **Admin opens dashboard** → Views funnel metrics in real-time
+6. **Admin clicks "Generate AI Insights"** → OpenAI analyzes conversion rates and provides recommendations
 
-## Tech Stack
+## 💻 Tech Stack
 
-- **Backend**: FastAPI, SQLAlchemy, Postgres
-- **Dashboard**: Streamlit, Plotly
-- **AI**: OpenAI GPT-4
-- **Infrastructure**: Docker Compose
+### Backend
+- **FastAPI** - High-performance async API framework
+- **SQLAlchemy** - ORM and database toolkit
+- **PostgreSQL** - Primary data store
+- **psycopg2** - PostgreSQL adapter
+- **Pydantic** - Data validation
 
-## License
+### Frontend
+- **React 19** - UI library
+- **Vite** - Build tool and dev server
+- **React Router** - Client-side routing
+
+### Dashboard
+- **Streamlit** - Interactive data apps
+- **Plotly** - Charts and visualizations
+- **Pandas** - Data manipulation
+
+### AI
+- **OpenAI GPT-4** - Insights generation
+- **Anthropic Claude** - Alternative AI provider (configured)
+
+### Infrastructure
+- **Docker** - Containerization
+- **Render.com** - Cloud hosting
+- **GitHub** - Version control & CI/CD
+
+## 🏆 Key Technical Achievements
+
+- ✅ **Full-stack deployment** on production with 3 interconnected services
+- ✅ **Automatic database initialization** - Schema creation and data seeding on startup
+- ✅ **Real-time event tracking** with sub-second latency
+- ✅ **AI-powered insights** with OpenAI GPT-4 integration
+- ✅ **Responsive design** working across devices
+- ✅ **Production-grade error handling** and fallbacks
+- ✅ **CORS configuration** for cross-origin requests
+- ✅ **Environment-based configuration** for local/production
+
+## 📝 About This Project
+
+This project was built to demonstrate backend development capabilities for the **Aixel AI** team as part of the Backend SDE 1 application process. It showcases:
+
+- RESTful API design and implementation
+- Database schema design and optimization
+- Event-driven architecture for analytics
+- AI/ML integration for intelligent insights
+- Full deployment pipeline from development to production
+- Clean code organization and documentation
+
+**Built by**: Ayush Jhanwar
+**GitHub**: https://github.com/AyushJHANWAR03/Aixel
+**Contact**: ayushjhanwar123@gmail.com
+
+## 📄 License
 
 MIT
