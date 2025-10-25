@@ -1,4 +1,4 @@
-const API_BASE = 'https://aixel-backend.onrender.com';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
 
 // Deduplication cache - prevent same event from being tracked twice within 2 seconds
 const eventCache = new Map();
